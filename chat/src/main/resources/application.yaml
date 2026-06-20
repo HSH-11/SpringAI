@@ -12,3 +12,8 @@ spring:
         base-url: https://models.github.ai/inference
         # ?? API ??
         completions-path: /chat/completions
+    ollama:
+      init:
+        pull-model-strategy: when_missing
+      chat:
+        model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
