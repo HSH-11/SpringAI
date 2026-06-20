@@ -1,4 +1,14 @@
 spring:
   application:
     name: chat
-    cli: false
+  ai:
+    openai:
+      # ???? ?
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        # ?? ??? ??? AI ???
+        model: openai/gpt-4.1-nano
+        # GitHub Models ??? ??? ??
+        base-url: https://models.github.ai/inference
+        # ?? API ??
+        completions-path: /chat/completions
