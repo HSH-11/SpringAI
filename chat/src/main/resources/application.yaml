@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: chat
+  ai:
+    openai:
+      # ???? ?
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        # ?? ??? ??? AI ???
+        model: openai/gpt-4.1-nano
+        # GitHub Models ??? ??? ??
+        base-url: https://models.github.ai/inference
+        # ?? API ??
+        completions-path: /chat/completions
+    ollama:
+      init:
+        pull-model-strategy: when_missing
+      chat:
+        model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
