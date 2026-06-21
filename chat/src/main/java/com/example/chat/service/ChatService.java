@@ -1,6 +1,7 @@
 package com.example.chat.service;
 
 import jakarta.annotation.Nullable;
+import java.util.List;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClient.ChatClientRequestSpec;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
@@ -34,5 +35,22 @@ public class ChatService {
     private ChatClientRequestSpec prepareRequest(Prompt prompt, String conversationId) {
         return chatClient.prompt(prompt)
                 .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId));
+    }
+
+    public CsEvaluation csEvaluation(Prompt prompt, String conversationId) {
+        return prepareRequest(prompt, conversationId).call().entity(CsEvaluation.class);
+    }
+
+    // 1. 긴급도, 문의 카테고리 Enum 정의
+    public enum Urgency {LOW, NORMAL, HIGH, URGENT}
+
+    public enum Category {REFUND, SHIPPING, DEFECT, INQUIRY}
+
+    // 2. 응답 레코드 정의
+    public record CsEvaluation(
+            Category category,
+            Urgency urgency,
+            List<String> keywords // 예 : [배송지연, 환불요청, 파손]
+    ) {
     }
 }

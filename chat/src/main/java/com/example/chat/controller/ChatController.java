@@ -63,6 +63,11 @@ public class ChatController {
         return chatService.stream(prompt, promptBody.conversationId());
     }
 
+    @PostMapping(value = "/cs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ChatService.CsEvaluation cs(@RequestBody @Valid PromptBody promptBody) {
+        return chatService.csEvaluation(createPrompt(promptBody), promptBody.conversationId());
+    }
+
     public record PromptBody(
             @NotEmpty String conversationId,
             @NotEmpty String userPrompt,
