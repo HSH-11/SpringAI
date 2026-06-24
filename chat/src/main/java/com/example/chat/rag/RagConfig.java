@@ -2,7 +2,9 @@ package com.example.chat.rag;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.document.Document;
@@ -127,6 +129,33 @@ public class RagConfig {
             }
 
             System.out.println("[System] ETL 파이프라인 적재 종료");
+        };
+    }
+
+    @ConditionalOnProperty(prefix = "app.cli", name = "enabled", havingValue = "true")
+    @Bean
+    public DocumentPostProcessor printDocumentsPostProcessor() {
+        return (query, documents) -> {
+            System.out.println("\n[ Search Results ]");
+            System.out.println("===============================================");
+
+            if (documents == null || documents.isEmpty()) {
+                System.out.println("  No search results found.");
+                System.out.println("===============================================");
+                return documents;
+            }
+
+            for (int i = 0; i < documents.size(); i++) {
+                Document document = documents.get(i);
+                System.out.printf("▶ %d Document, Score: %.2f%n", i + 1, document.getScore());
+                System.out.println("-----------------------------------------------");
+                Optional.ofNullable(document.getText()).stream()
+                        .map(text -> text.split("\n")).flatMap(Arrays::stream)
+                        .forEach(line -> System.out.printf("%s%n", line));
+                System.out.println("===============================================");
+            }
+            System.out.print("\n[ RAG 사용 응답 ]\n\n");
+            return documents;
         };
     }
 
