@@ -29,3 +29,6 @@ app:
   etl:
     pipeline:
       init: true
+  vectorstore:
+    in-memory:
+      enabled: true
