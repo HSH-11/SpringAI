@@ -15,7 +15,14 @@ spring:
         pull-model-strategy: when_missing
       chat:
         model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
+      embedding:
+        options:
+          model: bge-m3
 
 logging:
   level:
     org.springframework.ai.chat.client.advisor: DEBUG
+
+app:
+  rag:
+    documents-location-pattern: classpath:spring-ai-llm2.pdf
