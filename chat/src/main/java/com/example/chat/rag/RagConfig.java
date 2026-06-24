@@ -168,5 +168,12 @@ public class RagConfig {
                 .queryExpander(queryExpander)
                 .queryTransformers(queryTransformer);
 
+        // 후처리기가 존재한다면 advisor 빌더에 추가
+        if (documentPostProcessor != null) {
+            builder.documentPostProcessors(documentPostProcessor);
+        }
+
+        return builder.build();
     }
+
 }
