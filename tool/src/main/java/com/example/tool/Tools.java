@@ -23,7 +23,7 @@ public class Tools {
 
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/{location")
+                        .path("/{location}")
                         .queryParam("format", customFormat)
                         .queryParam("lang", "ko")
                         .build(location))
