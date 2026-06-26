@@ -1,0 +1,29 @@
+# 애플리케이션 커스텀 옵션 추가
+app:
+  cli:
+    enabled: false  # CLI 모드 활성화 여부
+  chat:
+    default-system-prompt: 한국어를 사용하는 tool 지원 AI 입니다.  # 기본 system prompt
+
+logging:
+  level:
+    org:
+      springframework:
+        ai:
+          chat:
+            client:
+              advisor: DEBUG  # SimpleLoggerAdvisor 등의 Advisor에서 DEBUG 로그 출력
+          tool: DEBUG  # Tool 사용 관련 DEBUG 로그 출력
+
+spring:
+  application:
+    name: tool  # 애플리케이션 이름
+  ai:
+    model:
+      chat: openai  # 여러 Chat 모델 사용 시 auto-configurations 에서 사용할 모델 설정 필요 예: openai, ollama
+    openai:
+      api-key: ${OPENAI_API_KEY}  # OpenAI 호출 API를 제공하는 Provider의 경우 아래 내용을 적절히 수정
+      chat:
+        model: openai/gpt-4.1-nano
+        base-url: https://models.github.ai/inference  # 설정하지 않으면 기본 OpenAI api 호출 주소를 사용
+        completions-path: /chat/completions  # OpenAI 기본값은 /v1/chat/completions, github 모델 사용 시 아래와 같이 수정
