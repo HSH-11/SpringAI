@@ -2,6 +2,10 @@ spring:
   application:
     name: chat
     cli: false
+
+  elasticsearch:
+    uris: http://localhost:9200
+
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
@@ -15,7 +19,28 @@ spring:
         pull-model-strategy: when_missing
       chat:
         model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
+      embedding:
+        options:
+          model: bge-m3
+    vectorstore:
+      elasticsearch:
+        initialize-schema: true
+        index-name: spring-ai-document-index
+        dimensions: 1024
+        similarity: cosine
 
 logging:
   level:
     org.springframework.ai.chat.client.advisor: DEBUG
+
+app:
+  rag:
+    documents-location-pattern: classpath:spring-ai-llm2.pdf
+  etl:
+    pipeline:
+      init: true
+  vectorstore:
+    in-memory:
+      enabled: false
+  cli:
+    enabled: true
