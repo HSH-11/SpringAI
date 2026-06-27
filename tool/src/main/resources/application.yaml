@@ -19,6 +19,18 @@ spring:
   application:
     name: tool  # 애플리케이션 이름
   ai:
+    mcp:
+      client:
+        enabled: true  # MCP Client 활성화
+        type: SYNC  # MCP Client 타입
+        stdio:
+          connections:
+            weather-mcp-server:
+              # MCP 서버 실행 Python 경로 (프로젝트 venv)
+              command: c:/Users/user/SpringAI/tool/venv/Scripts/python.exe
+              args:
+                - -m
+                - mcp_weather_server  # MCP 서버 실행 인자
     model:
       chat: openai  # 여러 Chat 모델 사용 시 auto-configurations 에서 사용할 모델 설정 필요 예: openai, ollama
     openai:
