@@ -25,12 +25,12 @@ spring:
         type: SYNC  # MCP Client 타입
         stdio:
           connections:
-            weather-mcp-server:
-              # MCP 서버 실행 Python 경로 (프로젝트 venv)
-              command: c:/Users/user/SpringAI/tool/venv/Scripts/python.exe
-              args:
-                - -m
-                - mcp_weather_server  # MCP 서버 실행 인자
+            #            weather-mcp-server:
+            #              # MCP 서버 실행 Python 경로 (프로젝트 venv)
+            #              command: c:/Users/user/SpringAI/tool/venv/Scripts/python.exe
+            #              args:
+            #                - -m
+            #                - mcp_weather_server  # MCP 서버 실행 인자
             local-mcp-server:
               command: C:/Program Files/BellSoft/LibericaJDK-17/bin/java.exe
               args:
@@ -40,10 +40,10 @@ spring:
                 - --logging.pattern.console=               # 콘솔 로그 패턴 비우기
                 - --spring.ai.mcp.server.stdio=true        # STDIO 기반 MCP 서버 활성화
                 - --spring.main.web-application-type=none  # 웹 서버 기능 생략 (비웹 모드)
-        sse:
-          connections:
-            local-mcp-server:
-              url: http://localhost:8081
+    #            sse:
+    #              connections:
+    #                local-mcp-server:
+    #                  url: http://localhost:8081
 
     model:
       chat: openai  # 여러 Chat 모델 사용 시 auto-configurations 에서 사용할 모델 설정 필요 예: openai, ollama
