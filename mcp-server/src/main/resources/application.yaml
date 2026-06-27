@@ -1,0 +1,53 @@
+app:
+  chat:
+    default-system-prompt: 한국어를 사용하는 tool 지원 AI 입니다. # 기본 system prompt
+  etl:
+    pipeline:
+      init: true # 초기 데이터 로딩 여부
+  vectorstore:
+    in-memory.enabled: true # in-memory SimpleVectorStore 사용 여부
+  rag:
+    documents-location-pattern: classpath:spring-ai-llm2.pdf # RAG Data 위치
+
+logging:
+  level:
+    io:
+      modelcontextprotocol: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+        ai:
+          chat:
+            client:
+              advisor: DEBUG  # SimpleLoggerAdvisor 등의 Advisor에서 DEBUG 로그 출력
+          tool: DEBUG  # Tool 사용 관련 DEBUG 로그 출력
+          mcp: DEBUG # mcp 사용 관련 DEBUG 로그 출력
+  file:
+    path: log
+    name: log/${spring.application.name}.log
+
+server:
+  port: 8081
+spring:
+  application:
+    name: mcp-server
+  ai:
+    mcp:
+      server:
+        name: ${spring.application.name}
+        version: 0.1.0
+        type: SYNC
+        instructions: "지역을 받아 날씨 정보를 제공하고 Spring AI 개념을 RAG 를 사용해 제공하는 MCP 서버"
+        sse-message-endpoint: /mcp/messages
+    model:
+      chat: ollama  # 여러 Chat 모델 사용시 auto-configurations 에서 사용할 모델 설정 필요 예: openai, ollama
+      embedding: ollama # 여러 Embedding 모델 사용시 auto-configurations에서 사용할 모델 지정 (예: openai, ollama)
+      ollama:
+        init:
+          pull-model-strategy: when_missing  # when_missing, always, never 설정
+        chat:
+          options:
+            model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
+        embedding:
+          options:
+            model: bge-m3
