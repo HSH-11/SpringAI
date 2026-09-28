@@ -110,7 +110,7 @@ public class RagConfig {
                 }
                 log.info("[System] ETL 파이프라인 적재 종료");
             } catch (RuntimeException ex) {
-                log.error("[System] ETL 파이프라인을 마치지 못했습니다. OPENAI_API_KEY와 임베딩 모델(openai/text-embedding-3-small)을 확인하세요.", ex);
+                log.error("[System] ETL 파이프라인을 마치지 못했습니다. OPENAI_API_KEY와 임베딩 모델(text-embedding-3-small)을 확인하세요.", ex);
             }
         };
     }

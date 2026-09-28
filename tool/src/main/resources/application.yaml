@@ -54,7 +54,7 @@ spring:
         model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
     openai:
       api-key: ${OPENAI_API_KEY}
-      base-url: https://models.github.ai/inference
-      git-hub-models: true
+      base-url: https://api.openai.com/v1
+      git-hub-models: false
       chat:
-        model: openai/gpt-4.1-nano
+        model: gpt-4.1-nano

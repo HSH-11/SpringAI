@@ -45,12 +45,12 @@ spring:
       embedding: openai # 여러 Embedding 모델 사용시 auto-configurations에서 사용할 모델 지정 (예: openai, ollama)
     openai:
       api-key: ${OPENAI_API_KEY}
-      base-url: https://models.github.ai/inference
-      git-hub-models: true
+      base-url: https://api.openai.com/v1
+      git-hub-models: false
       chat:
-        model: openai/gpt-4.1-nano
+        model: gpt-4.1-nano
       embedding:
-        model: openai/text-embedding-3-small
+        model: text-embedding-3-small
     ollama:
       init:
         pull-model-strategy: never  # when_missing, always, never. never 이면 Ollama가 꺼져 있어도 서버는 기동된다.

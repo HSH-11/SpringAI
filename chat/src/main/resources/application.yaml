@@ -8,12 +8,12 @@ spring:
       embedding: openai
     openai:
       api-key: ${OPENAI_API_KEY}
-      base-url: https://models.github.ai/inference
-      git-hub-models: true
+      base-url: https://api.openai.com/v1
+      git-hub-models: false
       chat:
-        model: openai/gpt-4.1-nano
+        model: gpt-4.1-nano
       embedding:
-        model: openai/text-embedding-3-small
+        model: text-embedding-3-small
     ollama:
       init:
         pull-model-strategy: never
