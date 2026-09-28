@@ -1,0 +1,49 @@
+package com.example.mcpserver.rag;
+
+import java.util.Optional;
+import org.jspecify.annotations.Nullable;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.ChatOptions;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+
+@Service
+public class RagChatService {
+
+    private final ChatClient chatClient;
+
+
+    public RagChatService(ChatClient.Builder chatClientBuilder, Advisor[] advisors) {
+        this.chatClient = chatClientBuilder.defaultOptions(ChatOptions.builder().temperature(0.0))
+                .defaultAdvisors(advisors).build();
+    }
+
+    public Flux<String> stream(Prompt prompt, String conversationId, Optional<String> filterExpressionAsOpt) {
+        return prepareRequest(prompt, conversationId, filterExpressionAsOpt)
+                .stream()
+                .content();
+    }
+
+    public @Nullable ChatResponse call(Prompt prompt, String conversationId, Optional<String> filterExpressionAsOpt) {
+        return prepareRequest(prompt, conversationId, filterExpressionAsOpt)
+                .call()
+                .chatResponse();
+    }
+
+    private ChatClient.ChatClientRequestSpec prepareRequest(Prompt prompt, String conversationId,
+                                                            Optional<String> filterExpressionAsOpt) {
+        return chatClient.prompt(prompt)
+                .advisors(advisorSpec ->
+                        advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId))
+                .advisors(advisorSpec ->
+                        advisorSpec.param(VectorStoreDocumentRetriever.FILTER_EXPRESSION,
+                                filterExpressionAsOpt.orElse("")));
+
+    }
+}
+
