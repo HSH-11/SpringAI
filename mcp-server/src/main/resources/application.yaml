@@ -5,7 +5,8 @@ app:
     pipeline:
       init: true # 초기 데이터 로딩 여부
   vectorstore:
-    in-memory.enabled: true # in-memory SimpleVectorStore 사용 여부
+    in-memory:
+      enabled: true # in-memory SimpleVectorStore 사용 여부
   rag:
     documents-location-pattern: classpath:spring-ai-llm2.pdf # RAG Data 위치
 
@@ -40,14 +41,20 @@ spring:
         instructions: "지역을 받아 날씨 정보를 제공하고 Spring AI 개념을 RAG 를 사용해 제공하는 MCP 서버"
         sse-message-endpoint: /mcp/messages
     model:
-      chat: ollama  # 여러 Chat 모델 사용시 auto-configurations 에서 사용할 모델 설정 필요 예: openai, ollama
-      embedding: ollama # 여러 Embedding 모델 사용시 auto-configurations에서 사용할 모델 지정 (예: openai, ollama)
-      ollama:
-        init:
-          pull-model-strategy: when_missing  # when_missing, always, never 설정
-        chat:
-          options:
-            model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
-        embedding:
-          options:
-            model: bge-m3
+      chat: openai  # 여러 Chat 모델 사용시 auto-configurations 에서 사용할 모델 설정 필요 예: openai, ollama
+      embedding: openai # 여러 Embedding 모델 사용시 auto-configurations에서 사용할 모델 지정 (예: openai, ollama)
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      base-url: https://models.github.ai/inference
+      git-hub-models: true
+      chat:
+        model: openai/gpt-4.1-nano
+      embedding:
+        model: openai/text-embedding-3-small
+    ollama:
+      init:
+        pull-model-strategy: never  # when_missing, always, never. never 이면 Ollama가 꺼져 있어도 서버는 기동된다.
+      chat:
+        model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
+      embedding:
+        model: bge-m3

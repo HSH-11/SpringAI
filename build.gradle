@@ -1,0 +1,2 @@
+// 루트는 소스를 컴파일하지 않는다.
+// chat, tool, mcp-server, exercise 모듈은 settings.gradle의 includeBuild로 연결된다.

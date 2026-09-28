@@ -1,32 +1,34 @@
 spring:
   application:
     name: chat
-    cli: false
-
-  elasticsearch:
-    uris: http://localhost:9200
 
   ai:
+    model:
+      chat: openai
+      embedding: openai
     openai:
       api-key: ${OPENAI_API_KEY}
+      base-url: https://models.github.ai/inference
+      git-hub-models: true
       chat:
         model: openai/gpt-4.1-nano
-        # GitHub Models
-        base-url: https://models.github.ai/inference
-        completions-path: /chat/completions
+      embedding:
+        model: openai/text-embedding-3-small
     ollama:
       init:
-        pull-model-strategy: when_missing
+        pull-model-strategy: never
       chat:
         model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
       embedding:
-        options:
-          model: bge-m3
+        model: bge-m3
+    # elasticsearch 자동 구성은 type=elasticsearch 일 때만 켠다.
+    # 로컬에 Elasticsearch가 없으면 simple + in-memory 로 기동한다.
     vectorstore:
+      type: simple
       elasticsearch:
         initialize-schema: true
         index-name: spring-ai-document-index
-        dimensions: 1024
+        dimensions: 1536
         similarity: cosine
 
 logging:
@@ -41,6 +43,6 @@ app:
       init: true
   vectorstore:
     in-memory:
-      enabled: false
+      enabled: true
   cli:
-    enabled: true
+    enabled: false

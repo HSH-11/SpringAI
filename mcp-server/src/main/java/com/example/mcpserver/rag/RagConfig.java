@@ -90,28 +90,28 @@ public class RagConfig {
     public ApplicationRunner initEtlPipeline(
             List<DocumentReader> documentReaders,
             DocumentTransformer textSplitter,
-            DocumentTransformer keywordMetadataEnricher,
             List<DocumentWriter> documentWriters) {
 
         return args -> {
             log.info("[System] ETL 파이프라인 가동 시작");
 
-            for (DocumentReader reader : documentReaders) {
-                List<Document> rawDocuments = reader.get();
-                log.info("[Extract] 파일 읽기 완료");
+            try {
+                for (DocumentReader reader : documentReaders) {
+                    List<Document> rawDocuments = reader.get();
+                    log.info("[Extract] 파일 읽기 완료");
 
-                List<Document> chunkedDocuments = textSplitter.apply(rawDocuments);
-                log.info("[Transform] 문서 분할 완료");
+                    List<Document> chunkedDocuments = textSplitter.apply(rawDocuments);
+                    log.info("[Transform] 문서 분할 완료");
 
-                chunkedDocuments = keywordMetadataEnricher.apply(chunkedDocuments);
-
-                for (DocumentWriter writer : documentWriters) {
-                    writer.accept(chunkedDocuments);
+                    for (DocumentWriter writer : documentWriters) {
+                        writer.accept(chunkedDocuments);
+                    }
+                    log.info("[Load] 저장소 적재 완료");
                 }
-                log.info("[Load] 저장소 적재 완료");
+                log.info("[System] ETL 파이프라인 적재 종료");
+            } catch (RuntimeException ex) {
+                log.error("[System] ETL 파이프라인을 마치지 못했습니다. OPENAI_API_KEY와 임베딩 모델(openai/text-embedding-3-small)을 확인하세요.", ex);
             }
-
-            log.info("[System] ETL 파이프라인 적재 종료");
         };
     }
 

@@ -23,6 +23,7 @@ import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -100,35 +101,37 @@ public class RagConfig {
     @Bean
     public ApplicationRunner initEtlPipeline(
             List<DocumentReader> documentReaders,   // 1. Extract
-            DocumentTransformer textSplitter,       // 2. Transform
+            @Qualifier("textSplitter") DocumentTransformer textSplitter,       // 2. Transform
             // DocumentTransformer keywordMetadataEnricher,
             List<DocumentWriter> documentWriters    // 3. Load(콘솔 출력기, VectorDB)
     ) {
         return args -> {
-            // 1. 등록된 모든 파일 리더기들을 하나씩 꺼내서 실행
-            for (DocumentReader reader : documentReaders) {
+            try {
+                // 1. 등록된 모든 파일 리더기들을 하나씩 꺼내서 실행
+                for (DocumentReader reader : documentReaders) {
 
-                // 1. Extract 원본 파일에서 거대한 텍스트 덩어리를 읽어오기
-                List<Document> rawDocuments = reader.get();
-                System.out.println("[Extract] 파일 읽기 완료");
+                    // 1. Extract 원본 파일에서 거대한 텍스트 덩어리를 읽어오기
+                    List<Document> rawDocuments = reader.get();
+                    System.out.println("[Extract] 파일 읽기 완료");
 
-                // 2. Transform 읽어온 문서를 AI가 소화하기 좋게 조각조각 자르기
-                List<Document> chunkedDocuments = textSplitter.apply(rawDocuments);
-                System.out.println("[Transform] 문서 분할 완료");
+                    // 2. Transform 읽어온 문서를 AI가 소화하기 좋게 조각조각 자르기
+                    List<Document> chunkedDocuments = textSplitter.apply(rawDocuments);
+                    System.out.println("[Transform] 문서 분할 완료");
 
-                // 키워드 추출기 이어서 적용
-                // chunkedDocuments = keywordMetadataEnricher.apply(chunkedDocuments);
+                    // 3. [Load] 가공된 문서 조각들을 준비된 모든 저장소에 집어 넣음
+                    for (DocumentWriter writer : documentWriters) {
+                        writer.accept(chunkedDocuments);
+                    }
 
-                // 3. [Load] 가공된 문서 조각들을 준비된 모든 저장소에 집어 넣음
-                for (DocumentWriter writer : documentWriters) {
-                    writer.accept(chunkedDocuments);
+                    System.out.println("[Load] 저장소 적재 완료");
+
                 }
 
-                System.out.println("[Load] 저장소 적재 완료");
-
+                System.out.println("[System] ETL 파이프라인 적재 종료");
+            } catch (RuntimeException ex) {
+                System.err.println("[System] ETL 파이프라인을 마치지 못했습니다. OPENAI_API_KEY와 임베딩 모델(openai/text-embedding-3-small)을 확인하세요.");
+                ex.printStackTrace(System.err);
             }
-
-            System.out.println("[System] ETL 파이프라인 적재 종료");
         };
     }
 
