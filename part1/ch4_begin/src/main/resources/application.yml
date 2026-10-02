@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring-ai-part1
+    name: spring-ai-part1-ch4
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
