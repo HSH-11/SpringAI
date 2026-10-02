@@ -11,7 +11,25 @@ import reactor.core.publisher.Flux;
 @RestController
 @RequestMapping("/api/ai")
 public class ChatController {
-    
+    private final ChatClient chatClient;
 
+    public ChatController(ChatClient.Builder builder) {
+        this.chatClient = builder.build();
+    }
+
+    @GetMapping("/ask")
+    public String ask(@RequestParam String question) {
+        String answer = chatClient.prompt().user(question).call().content();
+        return answer;
+    }
+
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> stream(@RequestParam String question) {
+        return chatClient.prompt()
+                .user(question)
+                .stream()
+                .content();
+
+    }
 }
 

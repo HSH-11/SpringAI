@@ -17,6 +17,6 @@ public class QuestionController {
 
     @PostMapping("/ask")
     public Answer askQuestion(@RequestBody Question question) {
-        
+        return openAIService.getAnswer(question);
     }
 }
